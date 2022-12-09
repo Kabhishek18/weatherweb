@@ -1,5 +1,6 @@
 import requests
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import City
 from .form import CityFormRequest
@@ -9,7 +10,7 @@ def kevingToCelcius(kelvin):
     fahrenheit = celcius * (9/5) +32
     return celcius, fahrenheit
 
-
+@login_required
 def index(request):
     # Form 
     if request.method == 'POST':
@@ -53,3 +54,10 @@ def index(request):
 
     return render(request,'index.html',context)
 
+
+def deletecity(request):
+    if request.method == 'GET':
+        get = request.GET
+        City.objects.filter(name=get['id']).delete()
+
+    return redirect('/')   
